@@ -1,9 +1,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
-#include "inc/hw_ints.h"
 #include "inc/hw_memmap.h"
-#include "inc/hw_ints.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/gpio.h"
 #include "driverlib/timer.h"
@@ -94,16 +92,15 @@ void draw_grid(tContext* context,tRectangle* rectFullScreen,uint16_t max_width,u
     GrRectFill(context, rectFullScreen); // fill screen with black
     GrContextForegroundSet(context, ClrRoyalBlue); // blue line
     uint8_t i;
-    for(i=PIXELS_PER_DIV-5; i<max_width;i+=PIXELS_PER_DIV) {
+    for(i=4; i<max_width;i+=PIXELS_PER_DIV) {
         //this works because we are working with a square display
         GrLineDrawV(context,i,0,max_height);
         GrLineDrawH(context,0,max_width,i);
     }
-    int max_size = LCD_VERTICAL_MAX -1;
     GrContextForegroundSet(context, ClrYellow); // blue line
     for(i=1;i<128;++i) {
-       uint16_t prev_y = draw_buffer[i-1]/32;
-       uint16_t y = draw_buffer[i]/32;
+       uint16_t prev_y = 127 - draw_buffer[i-1]/32;
+       uint16_t y = 127 - draw_buffer[i]/32;
        GrLineDraw(context,i-1,prev_y,i,y);
     }
     GrFlush(context); // flush the frame buffer to the LCD
@@ -111,9 +108,9 @@ void draw_grid(tContext* context,tRectangle* rectFullScreen,uint16_t max_width,u
 
 void update_draw_buffer() {
     uint8_t i;
-    int32_t last_index = 0;
+    int32_t last_index = gADCBufferIndex;
     for(i=0;i<128;++i) {
-        int index = ADC_BUFFER_WRAP(last_index +i);
-        draw_buffer[i] = gADCBuffer[index];
+        int index = ADC_BUFFER_WRAP(last_index -i);
+        draw_buffer[127-i] = gADCBuffer[index];
     }
 }
