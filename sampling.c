@@ -84,7 +84,7 @@ void ADC_ISR(void)
     }
     gADCBufferIndex = ADC_BUFFER_WRAP(gADCBufferIndex + 1);
     // read sample from the ADC1 sequence 0 FIFO
-    uint16_t sample = *(uint16_t*)(ADC1_SSFIFO0_R);
+    uint16_t sample = (uint16_t)(ADC1_SSFIFO0_R);
     gADCBuffer[gADCBufferIndex] = sample; // read from sample sequence 0
 }
 
@@ -100,33 +100,20 @@ void draw_grid(tContext* context,tRectangle* rectFullScreen,uint16_t max_width,u
         GrLineDrawH(context,0,max_width,i);
     }
     int max_size = LCD_VERTICAL_MAX -1;
-    char was_high = 0x1;
-    uint16_t last_y = 0;
     GrContextForegroundSet(context, ClrYellow); // blue line
-    for(i=0;i<128;++i) {
-           if(draw_buffer[i] > 4338) {
-               if(was_high==0x0) {
-                   GrLineDrawV(context,i,0,max_height);
-               } else {
-                   GrPixelDraw(context,i,0);
-               }
-               was_high = 0x1;
-           } else {
-               if(was_high==0x1) {
-                   GrLineDrawV(context,i,0,max_height);
-               } else {
-                   GrPixelDraw(context,i,max_size);
-               }
-               was_high=0x0;
-           }
+    for(i=1;i<128;++i) {
+       uint16_t prev_y = draw_buffer[i-1]/32;
+       uint16_t y = draw_buffer[i]/32;
+       GrLineDraw(context,i-1,prev_y,i,y);
     }
     GrFlush(context); // flush the frame buffer to the LCD
 }
 
 void update_draw_buffer() {
     uint8_t i;
-    int32_t last_index = gADCBufferIndex;
+    int32_t last_index = 0;
     for(i=0;i<128;++i) {
-        draw_buffer[i] = gADCBuffer[ADC_BUFFER_WRAP(gADCBufferIndex -i)];
+        int index = ADC_BUFFER_WRAP(last_index +i);
+        draw_buffer[i] = gADCBuffer[index];
     }
 }
