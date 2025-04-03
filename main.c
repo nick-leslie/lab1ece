@@ -28,6 +28,9 @@
 uint32_t gSystemClock; // [Hz] system clock frequency
 volatile uint32_t gTime = 8345; // time in hundredths of a second
 
+volatile bool should_update_draw_buffer = true;
+
+
 void signal_init();
 
 int main(void)
@@ -48,8 +51,8 @@ int main(void)
     GrContextInit(&sContext, &g_sCrystalfontz128x128); // Initialize the grlib graphics context
     GrContextFontSet(&sContext, &g_sFontFixed6x8); // select font
 
-    uint32_t time;  // local copy of gTime
-    char str[50];   // string buffer
+//    uint32_t time;  // local copy of gTime
+//    char str[50];   // string buffer
     // full-screen rectangle
     uint16_t max_width = GrContextDpyWidthGet(&sContext)-1;
     uint16_t max_height =  GrContextDpyHeightGet(&sContext)-1;
@@ -65,6 +68,10 @@ int main(void)
 
     while (true) {
         draw_grid(&sContext,&rectFullScreen,max_width,max_height);
+        if(should_update_draw_buffer ==true) {
+            update_draw_buffer();
+            should_update_draw_buffer=false;
+        }
 //        GrContextForegroundSet(&sContext, ClrBlack);
 //        GrRectFill(&sContext, &rectFullScreen); // fill screen with black
 //        time = gTime; // read shared global only once
