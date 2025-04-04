@@ -98,9 +98,9 @@ void draw_grid(tContext* context,tRectangle* rectFullScreen,uint16_t max_width,u
         GrLineDrawH(context,0,max_width,i);
     }
     GrContextForegroundSet(context, ClrYellow); // blue line
-    for(i=1;i<128;++i) {
-       uint16_t prev_y = 127 - draw_buffer[i-1]/32;
-       uint16_t y = 127 - draw_buffer[i]/32;
+    for(i=1;i<LCD_VERTICAL_MAX;++i) {
+       uint16_t prev_y = LCD_VERTICAL_MAX - 1 - draw_buffer[i-1]/32;
+       uint16_t y = LCD_VERTICAL_MAX - 1 - draw_buffer[i]/32;
        GrLineDraw(context,i-1,prev_y,i,y);
     }
     GrFlush(context); // flush the frame buffer to the LCD
@@ -109,8 +109,8 @@ void draw_grid(tContext* context,tRectangle* rectFullScreen,uint16_t max_width,u
 void update_draw_buffer() {
     uint8_t i;
     int32_t last_index = gADCBufferIndex;
-    for(i=0;i<128;++i) {
+    for(i=0;i<LCD_VERTICAL_MAX;++i) {
         int index = ADC_BUFFER_WRAP(last_index -i);
-        draw_buffer[127-i] = gADCBuffer[index];
+        draw_buffer[(LCD_VERTICAL_MAX - 1)-i] = gADCBuffer[index];
     }
 }
