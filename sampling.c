@@ -99,8 +99,8 @@ void draw_grid(tContext* context,tRectangle* rectFullScreen,uint16_t max_width,u
     }
     GrContextForegroundSet(context, ClrYellow); // blue line
     for(i=1;i<LCD_VERTICAL_MAX;++i) {
-       uint16_t prev_y = LCD_VERTICAL_MAX - 1 - draw_buffer[i-1]/32;
-       uint16_t y = LCD_VERTICAL_MAX - 1 - draw_buffer[i]/32;
+       uint16_t prev_y = (LCD_VERTICAL_MAX - 1) - draw_buffer[i-1]/32;
+       uint16_t y = (LCD_VERTICAL_MAX - 1) - draw_buffer[i]/32;
        GrLineDraw(context,i-1,prev_y,i,y);
     }
     GrFlush(context); // flush the frame buffer to the LCD
