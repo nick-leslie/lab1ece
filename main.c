@@ -72,17 +72,6 @@ int main(void)
             update_draw_buffer();
             should_update_draw_buffer=false;
         }
-//        GrContextForegroundSet(&sContext, ClrBlack);
-//        GrRectFill(&sContext, &rectFullScreen); // fill screen with black
-//        time = gTime; // read shared global only once
-//        int minutes = time / 6000;
-//        int remaining = time % 6000;
-//        int seconds = remaining / 100;
-//        int hundreds_of_seconds = remaining % 100;
-//        snprintf(str, sizeof(str), "Time = %d:%d:%d", minutes,seconds,hundreds_of_seconds); // convert time to string
-//        GrContextForegroundSet(&sContext, ClrYellow); // yellow text
-//        GrStringDraw(&sContext, str, /*length*/ -1, /*x*/ 0, /*y*/ 0, /*opaque*/ false);
-//        GrFlush(&sContext); // flush the frame buffer to the LCD
     }
 }
 
