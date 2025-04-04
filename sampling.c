@@ -71,17 +71,17 @@ volatile uint32_t gADCErrors = 0; // number of missed ADC deadlines
 void ADC_ISR(void)
 {
     // clear ADC1 sequence0 interrupt flag in the ADCISC register
-    //<...>;
     ADCIntClear(ADC1_BASE,0);
-
-//    ADCSequenceDataGet();
-    // check for ADC FIFO overflow
+    //check for missed intrupts
     if(ADC1_OSTAT_R & ADC_OSTAT_OV0) {
-    gADCErrors++; // count errors
-    ADC1_OSTAT_R = ADC_OSTAT_OV0; // clear overflow condition
+        gADCErrors++; // count errors
+        ADC1_OSTAT_R = ADC_OSTAT_OV0; // clear overflow condition
     }
+    //get the index for sample.
+    // ADC_BUFFER_WRAP is a macro that handles wrapping the buffer
     gADCBufferIndex = ADC_BUFFER_WRAP(gADCBufferIndex + 1);
-    // read sample from the ADC1 sequence 0 FIFO
+    
+    // read sample from the ADC1 sequence 0 FIFO using direct address access
     uint16_t sample = (uint16_t)(ADC1_SSFIFO0_R);
     gADCBuffer[gADCBufferIndex] = sample; // read from sample sequence 0
 }
